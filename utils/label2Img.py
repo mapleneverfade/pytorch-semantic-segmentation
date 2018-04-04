@@ -27,9 +27,6 @@ def label_colormap(N=256):
 def label2rgb(lbl, img=None, n_labels=None, alpha=0.3, thresh_suppress=0):
     if n_labels is None:
         n_labels = len(np.unique(lbl))
-
-    print(n_labels)
-
     cmap = label_colormap(n_labels)
     cmap = (cmap * 255).astype(np.uint8)
     #change color to deep 
@@ -38,10 +35,8 @@ def label2rgb(lbl, img=None, n_labels=None, alpha=0.3, thresh_suppress=0):
         cmap[2,1] = 255.0
     except IndexError as e:
         pass
-
     lbl_viz = cmap[lbl]
     lbl_viz[lbl == -1] = (0, 0, 0)  # unlabeled
-
 
     if img is not None:
         img_gray = PIL.Image.fromarray(img).convert('LA')
@@ -84,12 +79,3 @@ def draw_label(label, img, label_names, colormap=None):
     out = np.array(PIL.Image.open(f))[:, :, :3]
     out = scipy.misc.imresize(out, img.shape[:2])
     return out
-'''
-img = np.array(Image.open('K78_img.jpg').convert('RGB'))
-label = np.array(Image.open('K78_label.png').convert('P'))
-label_name=[1,2,3]
-
-draw_ = draw_label(label,img,label_name)
-plt.imshow(draw_)
-plt.show()
-'''
