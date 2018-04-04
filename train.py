@@ -2,7 +2,7 @@ import os
 import time
 import math
 import torch
-from eval import eval
+from eval import *
 import torch.nn as nn
 from utils import evalIoU
 from networks import get_model
@@ -20,7 +20,7 @@ NUM_CHANNELS = 3
 
 def train(args, model):
     NUM_CLASSES = args.num_classes #pascal=21, cityscapes=20
-
+    savedir = args.savedir
     weight = torch.ones(NUM_CLASSES)
     
     #add the weight of each class (1/ln(c+Pclass))
@@ -48,7 +48,7 @@ def train(args, model):
     print('training set is {} '.format(len(image_train)))
     print('val set is {} '.format(len(image_val)))
 
-    # my picture size is too big, so i resize then first before crop (732,512)
+    # my picture size is too big, so i resize then before crop (732,512)
     train_transform = MyTransform(reshape_size=(500,350),crop_size=(448,320), augment=True)  # data transform for training set with data augmentation, including resize, crop, flip and so on
     val_transform = MyTransform(reshape_size=(500,350),crop_size=(448,320), augment=False)   #data transform for validation set without data augmentation
 
@@ -62,43 +62,29 @@ def train(args, model):
         criterion = CrossEntropyLoss2d(weight).cuda() 
     else:
         criterion = CrossEntropyLoss2d(weight)
-
-    savedir = args.savedir
-
+        
     #save log
     automated_log_path = savedir + "/automated_log.txt"
-    modeltxtpath = savedir + "/model.txt"    
-
     if (not os.path.exists(automated_log_path)):    #dont add first line if it exists 
         with open(automated_log_path, "a") as myfile:
             myfile.write("Epoch\t\tTrain-loss\t\tTest-loss\t\tTrain-IoU\t\tTest-IoU\t\tlearningRate")
-
-    with open(modeltxtpath, "w") as myfile:
-        myfile.write(str(model))
     
     optimizer = Adam(model.parameters(), args.lr, (0.9, 0.999),  eps=1e-08, weight_decay=1e-4) 
-    #optimizer = nn.DataParallel(optimizer) #multi-gpu
-
     lambda1 = lambda epoch: pow((1-((epoch-1)/args.num_epochs)),0.9)  
     scheduler = lr_scheduler.LambdaLR(optimizer, lr_lambda=lambda1)    #  learning rate changed every epoch            
-        
-    start_epoch = 1    
+    start_epoch = 1   
+    
     for epoch in range(start_epoch, args.num_epochs+1):
-
         print("----- TRAINING - EPOCH", epoch, "-----")
-
+        
         scheduler.step(epoch)   
-
         epoch_loss = []
         time_train = []
         
-        #calculate IoU
-        doIouTrain = args.iouTrain   
-        doIouVal =  args.iouVal      
+        #confmatrix for calculating IoU   
         confMatrix = evalIoU.generateMatrixTrainId(evalIoU.args)
         perImageStats = {}
         nbPixels = 0
-
         usedLr = 0
         #for param_group in optimizer.param_groups:
         for param_group in optimizer.param_groups:
@@ -116,11 +102,7 @@ def train(args, model):
             inputs = Variable(images)
             targets = Variable(labels)
             
-            #print('size is {} target size is {}'.format(inputs.size(), targets.size()))
-
             outputs = model(inputs) 
-            
-            #print('outputs size is {}'.format(outputs.size()))
             loss = criterion(outputs, targets[:, 0])
             
             optimizer.zero_grad()
@@ -131,49 +113,26 @@ def train(args, model):
             time_train.append(time.time() - start_time)
 
             #Add outputs to confusion matrix    #CODE USING evalIoU.py remade from cityscapes/scripts/evaluation/evalPixelLevelSemanticLabeling.py
-            if (doIouTrain):
-                #compatibility with criterion dataparallel
-                if isinstance(outputs, list):   #merge gpu tensors
-                    outputs_cpu = outputs[0].cpu()
-                    for i in range(1,len(outputs)):
-                        outputs_cpu = torch.cat((outputs_cpu, outputs[i].cpu()), 0)
-                else:
-                    outputs_cpu = outputs.cpu()
-
-                for i in range(0, outputs_cpu.size(0)):   #args.batch_size
-                    prediction = ToPILImage()(outputs_cpu[i].max(0)[1].data.unsqueeze(0).byte())
-                    groundtruth = ToPILImage()(labels[i].cpu().byte())
-                    nbPixels += evalIoU.evaluatePairPytorch(prediction, groundtruth, confMatrix, perImageStats, evalIoU.args)
-
+            if (args.iouTrain):
+                add_to_confMatrix(outputs, labels, confMatrix, perImageStats, nbPixels)
+              
             if args.steps_loss > 0 and step % args.steps_loss == 0:
                 average = sum(epoch_loss) / len(epoch_loss)
                 print('loss: {} (epoch: {}, step: {})'.format(average,epoch,step), 
                         "// Avg time/img: %.4f s" % (sum(time_train) / len(time_train) / args.batch_size))
-
             
         average_epoch_loss_train = sum(epoch_loss) / len(epoch_loss)
-        #evalIoU.printConfMatrix(confMatrix, evalIoU.args)
-        
-        iouTrain = 0
-        if (doIouTrain):
-            # Calculate IOU scores on class level from matrix
-            classScoreList = {}
-            for label in evalIoU.args.evalLabels:
-                labelName = evalIoU.trainId2label[label].name
-                classScoreList[labelName] = evalIoU.getIouScoreForTrainLabel(label, confMatrix, evalIoU.args)
-            iouAvgStr  = evalIoU.getColorEntry(evalIoU.getScoreAverage(classScoreList, evalIoU.args), evalIoU.args) + "{avg:5.3f}".format(avg=evalIoU.getScoreAverage(classScoreList, evalIoU.args)) + evalIoU.args.nocol
-            
-            iouTrain = float(evalIoU.getScoreAverage(classScoreList, evalIoU.args))
-            print ("EPOCH IoU on TRAIN set: ", iouAvgStr)            
-            
+        iouAvgStr, iouTrain = cal_iou(evalIoU, confMatrix)
+        print ("EPOCH IoU on TRAIN set: ", iouAvgStr)
+                       
         # calculate eval-loss and eval-IoU
         average_epoch_loss_val, iouVal = eval(args, model, loader_val, criterion, epoch)     
+        
         #save model every X epoch
         if  epoch % args.epoch_save==0:
             torch.save(model.state_dict(), '{}_{}.pth'.format(os.path.join(args.savedir,args.model),str(epoch)))
 
-        #SAVE TO FILE A ROW WITH THE EPOCH RESULT (train loss, val loss, train IoU, val IoU)
-        #Epoch		Train-loss		Test-loss	Train-IoU	Test-IoU		learningRate
+        #save log
         with open(automated_log_path, "a") as myfile:
             myfile.write("\n%d\t\t%.4f\t\t%.4f\t\t%.4f\t\t%.4f\t\t%.8f" % (epoch, average_epoch_loss_train, average_epoch_loss_val, iouTrain, iouVal, usedLr ))
     
@@ -181,14 +140,18 @@ def train(args, model):
     
 def main(args):
     savedir = '{}'.format(args.savedir)
+    modeltxtpath = os.path.join(savedir,'model.txt') 
 
     if not os.path.exists(savedir):
         os.makedirs(savedir)
-
-    with open(savedir + '/opts.txt', "w") as myfile:
+    with open(savedir + '/opts.txt', "w") as myfile: #record options
         myfile.write(str(args))
         
-    model = get_model(args)
+    model = get_model(args)     #load model
+    
+    with open(modeltxtpath, "w") as myfile:  #record model 
+        myfile.write(str(model))
+        
     if args.cuda:
         # model = torch.nn.DataParallel(model).cuda()  #multi-gpu
         model = model.cuda() 
