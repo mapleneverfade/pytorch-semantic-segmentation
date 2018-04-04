@@ -1,22 +1,21 @@
-from dataloader.transform import MyTransform
-from options.train_options import TrainOptions
-from torch.optim import SGD, Adam, lr_scheduler
-from torch.autograd import Variable
-from torch.utils.data import DataLoader
-from sklearn.model_selection import train_test_split
-from dataloader.dataset import NeoData
-from criterion.criterion import CrossEntropyLoss2d
-import torch
-from torchvision.transforms import ToPILImage
-from utils import evalIoU
-import torch.nn as nn
-from networks.network import *
-import math
 import os 
 import time
+import math
+import torch
+import torch.nn as nn
+from utils import evalIoU
+from networks import get_model
+from torch.autograd import Variable
+from dataloader.dataset import NeoData
+from torch.utils.data import DataLoader
+from dataloader.transform import MyTransform
+from torchvision.transforms import ToPILImage
+from options.train_options import TrainOptions
+from torch.optim import SGD, Adam, lr_scheduler
+from criterion.criterion import CrossEntropyLoss2d
+from sklearn.model_selection import train_test_split
+
 NUM_CHANNELS = 3
-
-
 
 def train(args, model):
     NUM_CLASSES = args.num_classes #pascal=21, cityscapes=20
@@ -29,8 +28,6 @@ def train(args, model):
     #weight[0]=1.45
     ##weight[1]=54.38
     #weight[2] = 428.723
-   
-
     imagedir = os.path.join(args.datadir,'image.txt')     
     labeldir = os.path.join(args.datadir,'label.txt')            
                                          
@@ -45,9 +42,7 @@ def train(args, model):
             label_train.append(line.strip().replace('\n',''))
 
     # options,  random split dataset into train,val,test, and record test data into '.txt'
-    image_train, image_test, label_train, label_test = train_test_split(image_train,label_train,random_state=10254,train_size=0.2,test_size=0.2)
-    image_val,image_test,label_val,label_test = train_test_split(image_test,label_test,random_state=5512,train_size=0.5,test_size=0.5)
-    
+    image_train, image_val, label_train, label_val = train_test_split(image_train,label_train,random_state=10254,train_size=0.5,test_size=0.5)
     
     print('training set is {} '.format(len(image_train)))
     print('val set is {} '.format(len(image_val)))
@@ -61,7 +56,6 @@ def train(args, model):
 
     loader = DataLoader(dataset_train, num_workers=args.num_workers, batch_size=args.batch_size, shuffle=True)
     loader_val = DataLoader(dataset_val, num_workers=args.num_workers, batch_size=args.batch_size, shuffle=False)
-
 
     if args.cuda:
         criterion = CrossEntropyLoss2d(weight).cuda() 
@@ -252,15 +246,6 @@ def train(args, model):
     
     return(model)   
     
-def weights_init(m):
-        classname = m.__class__.__name__
-        if classname.find('Conv') != -1:
-            n = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
-            m.weight.data.normal_(0, math.sqrt(2. / n))
-        elif classname.find('BatchNorm') != -1:
-            m.weight.data.fill_(1)
-            m.bias.data.fill_(0)
-
 def main(args):
     savedir = '{}'.format(args.savedir)
 
@@ -270,28 +255,11 @@ def main(args):
     with open(savedir + '/opts.txt', "w") as myfile:
         myfile.write(str(args))
         
-    net_dic = {'erfnet' : ERFNet, 'fcn8' : FCN8, 'fcn16' : FCN16, 
-                'fcn32' : FCN32, 'unet' : UNet, 'pspnet': PSPNet, 'segnet' : SegNet}
-    Net = net_dic[args.model]
-    
-    model = Net(args.num_classes)
-    model.apply(weights_init)
-
+    model = get_model(args)
     if args.cuda:
         # model = torch.nn.DataParallel(model).cuda()  #multi-gpu
         model = model.cuda() 
-    
-        def load_my_state_dict(model, state_dict):  #custom function to load model when not all dict keys are there
-            own_state = model.state_dict()
-            for name, param in state_dict.items():
-                if name not in own_state:
-                     continue
-                own_state[name].copy_(param)
-            return model
-        #print(torch.load(args.state))
-    if args.resume:
-        model = load_my_state_dict(model, torch.load(args.pre_trained))
-
+        
     print("========== TRAINING ===========")
     
     model = train(args,model)
