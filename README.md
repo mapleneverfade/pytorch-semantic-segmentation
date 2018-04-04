@@ -11,7 +11,11 @@
 ## Environment
 - pytorch 0.3.0
 - torchvision 0.2.0
-- python 3.5.2
+- python 3.5.2  
+Recommand you use virtualenv.
+## Download
+> git clone https://github.com/mapleneverfade/pytorch-semantic-segmentation.git  
+
 ## Train 
  If gpu is available:  
  
