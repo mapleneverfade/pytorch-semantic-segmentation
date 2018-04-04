@@ -11,8 +11,6 @@ from torchvision.transforms import ToPILImage
 from utils import evalIoU
 import torch.nn as nn
 from networks.network import *
-#from networks.network import FCN8, FCN16, FCN32, UNet, PSPNet, SegNet
-#from networks.erfnet import ERFNet
 import math
 import os 
 import time
