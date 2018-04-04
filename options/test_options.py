@@ -11,7 +11,7 @@ class TestOptions():
         self.parser.add_argument('--cuda', action='store_true', default=True)
         self.parser.add_argument('--model', default="erfnet", help='model to train,options:fcn8,segnet...')  
         self.parser.add_argument('--model-dir', default="./models/", help='path to stored-model')   
-        self.parser.add_argument('--num-classes', type=int, default=3)
+        self.parser.add_argument('--num-classes', type=int, default=21)
         self.parser.add_argument('--datadir', default="./data/test/",help='path where image.txt and label.txt lies')
         
         self.parser.add_argument('--stored',default=True, help='whether or not store the result')
