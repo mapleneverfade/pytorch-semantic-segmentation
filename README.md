@@ -27,7 +27,7 @@ Recommand you use virtualenv.
  There are some example pictures in ./data, so you could just run the command to test whether it  work.
 
 ## Test
- `CUDA_VISIBLE_DEVICES=0 python3 test.py --datadir ./data/test  --model segnet --model-dir ./models/ --save-dir ./results/`  
+ `CUDA_VISIBLE_DEVICES=0 python3 test.py --datadir ./data/test  --model segnet --model-dir ./save_models/segnet_50.pth --save-dir ./results/`  
  "--model-dir" is the path to your trained model
 
 ## Detail
