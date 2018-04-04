@@ -1,4 +1,4 @@
-# pytorch-semantic-segmentation
+# Pytorch-Semantic-Segmentation
 ## Reference
 - *[ERFNet](https://github.com/Eromera/erfnet_pytorch)*
 - *[PiWise](https://github.com/bodokaiser/piwise)*
@@ -12,13 +12,18 @@
 - pytorch 0.3.0
 - torchvision 0.2.0
 - python 3.5.2
-## Train
+## Train 
+ If gpu is available:  
+ 
  `CUDA_VISIBLE_DEVICES=0 python3 train.py --datadir ./data/train --savedir ./save_models/ --model segnet`  
+ else:  
+ 
+ `python3 train.py --cuda False --datadir ./data/train --savedir ./save_models/ --model segnet`  
  
  There are some example pictures in ./data, so you could just run the command to test whether it  work.
 
 ## Test
- CUDA_VISIBLE_DEVICES=0 python3 test.py --datadir ./data/test  --model segnet --model-dir ./models/ --save-dir ./results/
+ `CUDA_VISIBLE_DEVICES=0 python3 test.py --datadir ./data/test  --model segnet --model-dir ./models/ --save-dir ./results/`
 
 ## Detail
 1. More train and test options see ./options
