@@ -1,0 +1,1 @@
+Namespace(batch_size=1, cuda=True, datadir='./data/train/', epoch_save=5, iouTrain=True, iouVal=True, lr=0.005, model='fcn16', num_classes=21, num_epochs=150, num_workers=4, pretrained='./pre_trained/~~~.pth', resume=False, savedir='./save_models/fcn16', state=None, steps_loss=5)

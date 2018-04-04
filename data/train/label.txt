@@ -1,0 +1,12 @@
+./data/dataset/gtFine/2007_000032.png
+./data/dataset/gtFine/2007_000039.png
+./data/dataset/gtFine/2007_000063.png
+./data/dataset/gtFine/2007_000068.png
+./data/dataset/gtFine/2007_000121.png
+./data/dataset/gtFine/2007_000170.png
+./data/dataset/gtFine/2007_000241.png
+./data/dataset/gtFine/2007_000243.png
+./data/dataset/gtFine/2007_000250.png
+./data/dataset/gtFine/2007_000256.png
+./data/dataset/gtFine/2007_000333.png
+./data/dataset/gtFine/2007_000363.png

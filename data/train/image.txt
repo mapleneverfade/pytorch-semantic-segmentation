@@ -1,0 +1,12 @@
+./data/dataset/JPEGImages/2007_000032.jpg
+./data/dataset/JPEGImages/2007_000039.jpg
+./data/dataset/JPEGImages/2007_000063.jpg
+./data/dataset/JPEGImages/2007_000068.jpg
+./data/dataset/JPEGImages/2007_000121.jpg
+./data/dataset/JPEGImages/2007_000170.jpg
+./data/dataset/JPEGImages/2007_000241.jpg
+./data/dataset/JPEGImages/2007_000243.jpg
+./data/dataset/JPEGImages/2007_000250.jpg
+./data/dataset/JPEGImages/2007_000256.jpg
+./data/dataset/JPEGImages/2007_000333.jpg
+./data/dataset/JPEGImages/2007_000363.jpg

@@ -1,0 +1,2 @@
+Epoch		Train-loss		Test-loss		Train-IoU		Test-IoU		learningRate
+1		9822122.8923		30.9549		0.0000		0.0000		0.00500000
