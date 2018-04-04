@@ -23,7 +23,8 @@
  There are some example pictures in ./data, so you could just run the command to test whether it  work.
 
 ## Test
- `CUDA_VISIBLE_DEVICES=0 python3 test.py --datadir ./data/test  --model segnet --model-dir ./models/ --save-dir ./results/`
+ `CUDA_VISIBLE_DEVICES=0 python3 test.py --datadir ./data/test  --model segnet --model-dir ./models/ --save-dir ./results/`  
+ "--model-dir" is the path to your trained model
 
 ## Detail
 1. More train and test options see ./options
@@ -31,3 +32,7 @@
 3. If you want train your own data. Remember to modify your data labels in ./utils/cityscapes/helpers/labels,and NUM_CLASSES in options.
 4. You can change the way the model load data in ./dataloader/ to fit your format of dataset. 
 5. test.py would calculate the mIoU and save the result of segmented picture in --savedir.
+
+## ToDo
+1. More Network
+2. Clean up the code.
