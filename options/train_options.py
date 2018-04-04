@@ -14,7 +14,7 @@ class TrainOptions():
         self.parser.add_argument('--num-classes', type=int, default=21)
         self.parser.add_argument('--datadir', default="./data/train/",help='path where image.txt and label.txt lies')
         self.parser.add_argument('--savedir', type=str, default='./save_models/',help='savedir for models')
-        self.parser.add_argument('--lr', type=float, default=5e-3)
+        self.parser.add_argument('--lr', type=float, default=5e-4)
         self.parser.add_argument('--num-epochs', type=int, default=150)
         self.parser.add_argument('--num-workers', type=int, default=4)
         self.parser.add_argument('--batch-size', type=int, default=1)
