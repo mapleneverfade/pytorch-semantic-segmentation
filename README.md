@@ -9,7 +9,7 @@
 - pspnet
 - unet
 ## Environment
-- pytorch 0.3.0
+- pytorch 0.2.0
 - torchvision 0.2.0
 - python 3.5.2  
 
