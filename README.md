@@ -13,10 +13,12 @@
 - torchvision 0.2.0
 - python 3.5.2
 ## Train
-if gpu is available :
-CUDA_VISIBLE_DEVICES=0 python3 train.py --datadir ./data/train --savedir ./save_models/ --model segnet 
+ `CUDA_VISIBLE_DEVICES=0 python3 train.py --datadir ./data/train --savedir ./save_models/ --model segnet`  
+ 
+ There are some example pictures in ./data, so you could just run the command to test whether it  work.
+
 ## Test
-CUDA_VISIBLE_DEVICES=0 python3 test.py --datadir ./data/test  --model segnet --model-dir ./models/ --save-dir ./results/
+ CUDA_VISIBLE_DEVICES=0 python3 test.py --datadir ./data/test  --model segnet --model-dir ./models/ --save-dir ./results/
 
 ## Detail
 1. More train and test options see ./options
