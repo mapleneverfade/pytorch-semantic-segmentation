@@ -12,8 +12,11 @@
 - pytorch 0.3.0
 - torchvision 0.2.0
 - python 3.5.2  
-Recommand you use virtualenv.
+
 ## Download
+Recommand you use virtualenv.
+> virtualenv -p python3 YourVirtualEnv --no-site-packages  
+
 > git clone https://github.com/mapleneverfade/pytorch-semantic-segmentation.git  
 
 ## Train 
