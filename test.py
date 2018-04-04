@@ -139,7 +139,7 @@ def main(args):
     iouAvgStr = evalIoU.getColorEntry(evalIoU.getScoreAverage(classScoreList, evalIoU.args),evalIoU.args) + "{avg:5.3f}".format(avg=evalIoU.getScoreAverage(classScoreList, evalIoU.args)) + evalIoU.args.nocol
     iouTrain = float(evalIoU.getScoreAverage(classScoreList,evalIoU.args))
     print("IoU on TEST set : ",iouAvgStr)
-    print("IoU on TEST set of each class - car:{}  light:{} ".format(classScoreList['car'],classScoreList['light']))
+    #print("IoU on TEST set of each class - car:{}  light:{} ".format(classScoreList['car'],classScoreList['light']))
 
 if __name__ == '__main__':
 
