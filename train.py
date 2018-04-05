@@ -125,6 +125,9 @@ def train(args, model):
     return(model)   
     
 def main(args):
+    '''
+        Train the model and record training options.
+    '''
     savedir = '{}'.format(args.savedir)
     modeltxtpath = os.path.join(savedir,'model.txt') 
 
@@ -139,13 +142,9 @@ def main(args):
         myfile.write(str(model))
         
     if args.cuda:
-        # model = torch.nn.DataParallel(model).cuda()  #multi-gpu
         model = model.cuda() 
-        
     print("========== TRAINING ===========")
-    
     model = train(args,model)
-
     print("========== TRAINING FINISHED ===========")
 
 if __name__ == '__main__':
