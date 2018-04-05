@@ -1,0 +1,4 @@
+./data/dataset/JPEGImages/2007_000068.jpg
+./data/dataset/JPEGImages/2007_000121.jpg
+./data/dataset/JPEGImages/2007_000243.jpg
+./data/dataset/JPEGImages/2007_000256.jpg
