@@ -40,7 +40,7 @@ def eval(args, model, loader_val, criterion, epoch):
                         "// Avg time/img: %.4f s" % (sum(time_val) / len(time_val) / args.batch_size))
                         
         average_epoch_loss_train = sum(epoch_loss_val) / len(epoch_loss_val)
-        iouAvgStr, iouVal = cal_iou(evalIoU, confMatrix)
+        iouAvgStr, iouVal, classScoreList = cal_iou(evalIoU, confMatrix)
         print ("EPOCH IoU on VAL set: ", iouAvgStr)
 
         return average_epoch_loss_val, iouVal
