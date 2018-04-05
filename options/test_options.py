@@ -13,7 +13,7 @@ class TestOptions():
         self.parser.add_argument('--model-dir', default="./models/", help='path to stored-model')   
         self.parser.add_argument('--num-classes', type=int, default=21)
         self.parser.add_argument('--datadir', default="./data/test/",help='path where image.txt and label.txt lies')
-        
+        self.parser.add_argument('--size', default=(672,480), help='resize the test image')
         self.parser.add_argument('--stored',default=True, help='whether or not store the result')
         self.parser.add_argument('--savedir', type=str, default='./results/',help='options. visualize the result of segmented picture, not just show IoU')
         
