@@ -107,11 +107,8 @@ class MyTransform(object):
        
         self.count = 0
     def __call__(self, input, target):
-        
-
         # do something to both images and labels
-        if self.reshape_size is not None or input.size[1]<self.crop_size[1] or input.size[0]<self.crop_size[0]:
-            #self.reshape_size = (400,400)
+        if self.reshape_size is not None:
             input = input.resize(self.reshape_size,Image.BILINEAR)
             target = target.resize(self.reshape_size,Image.NEAREST)
  
@@ -132,6 +129,21 @@ class MyTransform(object):
         target = torch.from_numpy(np.array(target)).long().unsqueeze(0)
 
         return input, target
+    
+class Transform_test(object):
+    def __init__(self,size):
+    
+        self.size = size
+        
+    def __call__(self, input, target):
+        # do something to both images 
+        input =  input.resize(self.size, Image.BILINEAR)
+        target = target.resize(self.size,Image.NEAREST)
+
+        target = torch.from_numpy(np.array(target)).long().unsqueeze(0)
+        input_tensor = ToTensor()(input)  
+        Normalize([.485, .456, .406], [.229, .224, .225])(input_tensor)
+        return input_tensor, target, input
         
 
 def img2label(img,label,count):
