@@ -14,8 +14,6 @@ from torchvision.transforms import ToPILImage
 from options.train_options import TrainOptions
 from torch.optim import SGD, Adam, lr_scheduler
 from criterion.criterion import CrossEntropyLoss2d
-from sklearn.model_selection import train_test_split
-
 NUM_CHANNELS = 3
 
 def train(args, model):
@@ -30,30 +28,18 @@ def train(args, model):
     ##weight[1]=54.38
     #weight[2] = 428.723
     imagedir = os.path.join(args.datadir,'image.txt')     
-    labeldir = os.path.join(args.datadir,'label.txt')            
-                                         
-    image_train = []
-    label_train= [] 
-
-    with open(imagedir,'r') as f:
-        for line in f:
-            image_train.append(line.strip().replace('\n',''))
-    with open(labeldir,'r') as f:
-        for line in f:
-            label_train.append(line.strip().replace('\n',''))
-
-    # options,  random split dataset into train,val,test, and record test data into '.txt'
-    image_train, image_val, label_train, label_val = train_test_split(image_train,label_train,random_state=10254,train_size=0.5,test_size=0.5)
+    labeldir = os.path.join(args.datadir,'label.txt')   
     
-    print('training set is {} '.format(len(image_train)))
-    print('val set is {} '.format(len(image_val)))
-
-    # my picture size is too big, so i resize then before crop (732,512)
+    imagepath_train = os.path.join(args.datadir, 'train/image.txt')
+    labelpath_train = os.path.join(args.datadir, 'train/label.txt')
+    imagepath_val = os.path.join(args.datadir, 'val/image.txt')
+    labelpath_val = os.path.join(args.datadir, 'val/label.txt')
+    
     train_transform = MyTransform(reshape_size=(500,350),crop_size=(448,320), augment=True)  # data transform for training set with data augmentation, including resize, crop, flip and so on
     val_transform = MyTransform(reshape_size=(500,350),crop_size=(448,320), augment=False)   #data transform for validation set without data augmentation
 
-    dataset_train = NeoData(train_transform,image_train,label_train) # self-define dataset , you can change the way it work .
-    dataset_val = NeoData(val_transform,image_val, label_val)
+    dataset_train = NeoData(imagepath_train, labelpath_train, train_transform) #DataSet
+    dataset_val = NeoData(imagepath_val, labelpath_val, val_transform)
 
     loader = DataLoader(dataset_train, num_workers=args.num_workers, batch_size=args.batch_size, shuffle=True)
     loader_val = DataLoader(dataset_val, num_workers=args.num_workers, batch_size=args.batch_size, shuffle=False)
