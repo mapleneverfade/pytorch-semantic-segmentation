@@ -30,7 +30,7 @@ Recommand you use virtualenv.
  There are some example pictures in ./data, so you could just run the command to test whether it  work.
 ### More Training Options
     --model        model to use ['segnet fcn8 fcn16 fcn32 erfnet pspnet unet'] [default=segnet]·
-    --datadir      where you store 'DATA.txt'.In my case, './data' should have subfolders './data/train/' and './data/val/' where store image.txt' and 'label.txt'. [default='./data/']
+    --datadir      where you store [train/val].In my case, './data' should have subfolders './data/train/' and './data/val/' where store image.txt' and 'label.txt'. [default='./data/']
     --savedir      path to savedir [default='./save_models/']
     --lr           learning rate [default=5e-4]·
     --num-epochs   epochs [default=150]·
