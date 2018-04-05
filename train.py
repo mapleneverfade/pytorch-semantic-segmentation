@@ -122,7 +122,7 @@ def train(args, model):
                         "// Avg time/img: %.4f s" % (sum(time_train) / len(time_train) / args.batch_size))
             
         average_epoch_loss_train = sum(epoch_loss) / len(epoch_loss)
-        iouAvgStr, iouTrain = cal_iou(evalIoU, confMatrix)
+        iouAvgStr, iouTrain, classScoreList = cal_iou(evalIoU, confMatrix)
         print ("EPOCH IoU on TRAIN set: ", iouAvgStr)
                        
         # calculate eval-loss and eval-IoU
