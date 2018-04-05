@@ -61,10 +61,10 @@ class NeoData_test(Dataset):
         self.label= [] 
         with open(imagepath,'r') as f:
             for line in f:
-                self.image.append(line.strip())#.replace('\n',''))
+                self.image.append(line.strip())
         with open(labelpath,'r') as f:
             for line in f:
-                self.label.append(line.strip())#.replace('\n',''))
+                self.label.append(line.strip())
         print("Length of test data is {}".format(len(self.image)))
     def __getitem__(self, index):
         filename = self.image[index]
