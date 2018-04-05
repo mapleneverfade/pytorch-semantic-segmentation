@@ -46,6 +46,32 @@ Recommand you use virtualenv.
     --num-classes  number of labels, pascalvoc is 21, cityscape is 20. change it when you training your own dataset.[default=21]
     --size         reshape size [default=(672,480)]
     --savedir      [default='./results/']
+## Options
+split_train_val.py mainly to split original [image.txt,label.txt] into './train/[image.txt,label.txt]' and './val/[image.txt,label.txt]'  
+
+Options for split:  
+
+    --savedir        [default='./data/']
+    --imagepath      path to your own image.txt
+    --labelpath      path to your own label.txt
+    --random-state   random seed [default=10000]
+    --train-size     ratio of train set [default=0.7]
+    --val-size       ratio of val set   [default=0.3]
+For example, if your original folder like this :  
+
+    ./data
+          image.txt
+          label.txt
+After run 'python3 split_train_val.py --savedir ./data --imagepath ./data/image.txt --labelpath ./data/label.txt', you will see this:  
+
+    ./data
+          ./train
+                 image.txt
+                 label.txt
+          ./val   
+                 image.txt
+                 label.txt
+                                                      
 ## Detail
 1. More train and test options see ./options
 2. datadir include image.txt and label.txt, and the default datasets is for [pascalvoc](http://host.robots.ox.ac.uk/pascal/VOC/voc2012/segexamples/index.html)
