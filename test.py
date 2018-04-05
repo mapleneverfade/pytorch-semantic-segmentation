@@ -49,7 +49,7 @@ def main(args):
     
     model = get_model(args)
     if args.cuda:
-        model = Net(args.num_classes).cuda()
+        model = model.cuda()
     model.load_state_dict(torch.load(args.model_dir))
     model.eval()
     count = 0
