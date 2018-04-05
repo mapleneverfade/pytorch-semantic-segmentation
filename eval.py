@@ -68,5 +68,5 @@ def cal_iou(evalIoU, confMatrix):
 
         iouAvgStr  = evalIoU.getColorEntry(evalIoU.getScoreAverage(classScoreList, evalIoU.args), evalIoU.args) + "{avg:5.3f}".format(avg=evalIoU.getScoreAverage(classScoreList, evalIoU.args)) + evalIoU.args.nocol
         iou = float(evalIoU.getScoreAverage(classScoreList, evalIoU.args))
-        return iouAvgStr, iou
+        return iouAvgStr, iou, classScoreList
     
