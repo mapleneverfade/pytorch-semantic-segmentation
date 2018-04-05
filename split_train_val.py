@@ -7,25 +7,27 @@ from argparse import ArgumentParser
     After split, new train-data will stored in './data/train/[image.txt,label.txt]', val-data will stored in './data/val/[image.txt,label.txt]'
     You can change the code to split test-data.  
 '''
-
 def split_train_val(args):
     imagepath = args.imagepath
     labelpath = args.labelpath
     assert os.path.exists(imagepath), "{} is not exists!".format(imagepath)
     assert os.path.exists(labelpath), "{} is not exists!".format(labelpath)
-    
     image = []
     label = []
-    with open(os.path.join(args.savedir,'image.txt'),'r') as f:
+    with open(imagepath,'r') as f:
         for line in f:
             image.append(line.strip())
-    with open(os.path.join(args.savedir,'label.txt'),'r') as f:
+    with open(labelpath,'r') as f:
         for line in f:
             label.append(line.strip())
             
     image_train, image_val, label_train, label_val = train_test_split(image,label,random_state=args.random_state,train_size=args.train_size,test_size=args.val_size)
     
     #store train data in ./data/train/image.txt
+    if not os.path.exists(os.path.join(args.savedir,'train')):
+        os.mkdir(os.path.join(args.savedir,'train'))
+    if not os.path.exists(os.path.join(args.savedir,'val')):
+        os.mkdir(os.path.join(args.savedir,'val'))
     with open(os.path.join(args.savedir,'train/image.txt'),'w') as f:
         for image in image_train:
             f.write(image+'\n')
@@ -45,8 +47,8 @@ def split_train_val(args):
 if __name__ == '__main__':
     parser = ArgumentParser()
     parser.add_argument('--savedir', default='./data/')
-    parser.add_argument('--imagepath', default='./data/') 
-    parser.add_argument('--labelpath', default='./data/')
+    parser.add_argument('--imagepath', default='./data/image.txt') 
+    parser.add_argument('--labelpath', default='./data/label.txt')
     parser.add_argument('--random-state',default=10000)
     parser.add_argument('--train-size',default=0.7)
     parser.add_argument('--val-size',default=0.3)
