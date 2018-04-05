@@ -20,19 +20,8 @@ def main(args):
     imagedir = os.path.join(args.datadir,'image.txt')     
     labeldir = os.path.join(args.datadir,'label.txt')            
                                          
-    image_test = []
-    label_test = [] 
-    with open(imagedir,'r') as f:
-        for line in f:
-            image_test.append(line.strip().replace('\n',''))
-    with open(labeldir,'r') as f:
-        for line in f:
-            label_test.append(line.strip().replace('\n',''))
-
-    print("length of testimage and its label: {}".format(len(image_test)))
-
     transform = Transform_test(args.size)
-    dataset_test = NeoData_test(transform, image_test, label_test)
+    dataset_test = NeoData_test(imagedir, labeldir, transform)
     loader = DataLoader(dataset_test, num_workers=4, batch_size=1,shuffle=False) #test data loader
 
     #eval the result of IoU
@@ -47,11 +36,11 @@ def main(args):
     model.load_state_dict(torch.load(args.model_dir))
     model.eval()
     count = 0
-    for step, colign in enumerate(zip(loader,image_test)):
+    for step, colign in enumerate(loader):
  
-      img = colign[0][2].squeeze(0).numpy()       #image-numpy,original image   
-      images = colign[0][0]                       #image-tensor
-      label = colign[0][1]                        #label-tensor
+      img = colign[2].squeeze(0).numpy()       #image-numpy,original image   
+      images = colign[0]                       #image-tensor
+      label = colign[1]                        #label-tensor
 
       if args.cuda:
         images = images.cuda()
@@ -63,7 +52,7 @@ def main(args):
       add_to_confMatrix(outputs, label, confMatrix, perImageStats, nbPixels)  #add result to confusion matrix
 
       label2img = label2rgb(out,img,n_labels = args.num_classes)   #merge segmented result with original picture 
-      Image.fromarray(label2img).save(despath + '_label2img_' + colign[1].strip().split('/')[-1])
+      Image.fromarray(label2img).save(despath + 'label2img_' +str(count)+'.jpg' )
       count += 1
       print("This is the {}th of image!".format(count))
         
