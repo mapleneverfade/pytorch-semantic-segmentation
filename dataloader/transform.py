@@ -33,43 +33,31 @@ def colormap_cityscapes(n):
     
     return cmap
 
-
 def colormap(n):
     cmap=np.zeros([n, 3]).astype(np.uint8)
-
     for i in np.arange(n):
         r, g, b = np.zeros(3)
-
         for j in np.arange(8):
             r = r + (1<<(7-j))*((i&(1<<(3*j))) >> (3*j))
             g = g + (1<<(7-j))*((i&(1<<(3*j+1))) >> (3*j+1))
             b = b + (1<<(7-j))*((i&(1<<(3*j+2))) >> (3*j+2))
-
         cmap[i,:] = np.array([r, g, b])
-
     return cmap
 
 class Relabel:
-
     def __init__(self, olabel, nlabel):
         self.olabel = olabel
         self.nlabel = nlabel
-
     def __call__(self, tensor):
         assert (isinstance(tensor, torch.LongTensor) or isinstance(tensor, torch.ByteTensor)) , 'tensor needs to be LongTensor'
         tensor[tensor == self.olabel] = self.nlabel
         return tensor
 
-
 class ToLabel:
-
-    def __call__(self, image):
-       
+    def __call__(self, image):  
         return torch.from_numpy(np.array(image)).long().unsqueeze(0)  #np.array change the size of image
 
-
 class Colorize:
-
     def __init__(self, n=22):
         #self.cmap = colormap(256)
         self.cmap = colormap_cityscapes(256)
@@ -86,11 +74,9 @@ class Colorize:
         for label in range(0, len(self.cmap)):
             mask = gray_image[0] == label
             #mask = gray_image == label
-
             color_image[0][mask] = self.cmap[label][0]
             color_image[1][mask] = self.cmap[label][1]
             color_image[2][mask] = self.cmap[label][2]
-
         return color_image
 
 class MyTransform(object):
@@ -115,14 +101,9 @@ class MyTransform(object):
         if self.augment :
             input, target = RandomCrop(self.crop_size)(input,target) # RandomCrop for  image and label in the same area
             input, target = self.flip(input,target)               # RandomFlip for both croped image and label
-
-
         else:
             input, target =  CenterCrop(self.crop_size)(input, target) # CenterCrop for the validation data
             
-        #count = random.randint(1,10000)
-        #img2label(input,target,count)
-        
         input = ToTensor()(input)  
         Normalize([.485, .456, .406], [.229, .224, .225])(input) #normalize with the params of imagenet
           
@@ -131,10 +112,11 @@ class MyTransform(object):
         return input, target
     
 class Transform_test(object):
+    '''
+        Transform for test data.Reshape size is difined in ./options/test_options.py
+    '''
     def __init__(self,size):
-    
-        self.size = size
-        
+        self.size = size   
     def __call__(self, input, target):
         # do something to both images 
         input =  input.resize(self.size, Image.BILINEAR)
@@ -145,14 +127,10 @@ class Transform_test(object):
         Normalize([.485, .456, .406], [.229, .224, .225])(input_tensor)
         return input_tensor, target, input
         
-
 def img2label(img,label,count):
-
     count+=1
     img = np.array(img)
     label = np.array(label)
-
-
     for i in range(label.shape[0]):
         for j in range(label.shape[1]):
             if label[i,j]==0:
