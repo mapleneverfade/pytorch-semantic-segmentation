@@ -2,6 +2,11 @@ import os
 from sklearn.model_selection import train_test_split
 from argparse import ArgumentParser
 
+'''
+    Split dataset into train-data and val-data, option --imagepath and --labelpath is the path to your original [image.txt and label.txt],
+    After split, new train-data will stored in './data/train/[image.txt,label.txt]', val-data will stored in './data/val/[image.txt,label.txt]'
+    You can change the code to split test-data.  
+'''
 
 def split_train_val(args):
     imagepath = args.imagepath
