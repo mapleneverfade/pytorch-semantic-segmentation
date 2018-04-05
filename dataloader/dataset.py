@@ -30,10 +30,10 @@ class NeoData(Dataset):
         self.label= [] 
         with open(imagepath,'r') as f:
             for line in f:
-                self.image.append(line.strip().replace('\n',''))
+                self.image.append(line.strip())
         with open(labelpath,'r') as f:
             for line in f:
-                self.label.append(line.strip().replace('\n',''))
+                self.label.append(line.strip())
 
     def __getitem__(self, index):
         filename = self.image[index]
