@@ -16,20 +16,13 @@ from torch.optim import SGD, Adam, lr_scheduler
 from criterion.criterion import CrossEntropyLoss2d
 NUM_CHANNELS = 3
 
-def train(args, model):
-    NUM_CLASSES = args.num_classes #pascal=21, cityscapes=20
-    savedir = args.savedir
-    weight = torch.ones(NUM_CLASSES)
-    
+def get_loader(args):
     #add the weight of each class (1/ln(c+Pclass))
     #calculate the weights of each class
 
     #weight[0]=1.45
     ##weight[1]=54.38
     #weight[2] = 428.723
-    imagedir = os.path.join(args.datadir,'image.txt')     
-    labeldir = os.path.join(args.datadir,'label.txt')   
-    
     imagepath_train = os.path.join(args.datadir, 'train/image.txt')
     labelpath_train = os.path.join(args.datadir, 'train/label.txt')
     imagepath_val = os.path.join(args.datadir, 'val/image.txt')
@@ -37,12 +30,21 @@ def train(args, model):
     
     train_transform = MyTransform(reshape_size=(500,350),crop_size=(448,320), augment=True)  # data transform for training set with data augmentation, including resize, crop, flip and so on
     val_transform = MyTransform(reshape_size=(500,350),crop_size=(448,320), augment=False)   #data transform for validation set without data augmentation
-
+    
     dataset_train = NeoData(imagepath_train, labelpath_train, train_transform) #DataSet
     dataset_val = NeoData(imagepath_val, labelpath_val, val_transform)
-
+    
     loader = DataLoader(dataset_train, num_workers=args.num_workers, batch_size=args.batch_size, shuffle=True)
     loader_val = DataLoader(dataset_val, num_workers=args.num_workers, batch_size=args.batch_size, shuffle=False)
+    
+    return loader, loader_val
+
+def train(args, model):
+    NUM_CLASSES = args.num_classes #pascal=21, cityscapes=20
+    savedir = args.savedir
+    weight = torch.ones(NUM_CLASSES)
+
+    loader, loader_val = get_loader(args)
 
     if args.cuda:
         criterion = CrossEntropyLoss2d(weight).cuda() 
