@@ -137,4 +137,10 @@ class CenterCrop(object):
     def __repr__(self):
         return self.__class__.__name__ + '(size={0})'.format(self.size)
 
+class RandomRotate(object):
+    def __init__(self, degree):
+        self.degree = degree
 
+    def __call__(self, img, mask):
+        rotate_degree = random.random() * 2 * self.degree - self.degree
+        return img.rotate(rotate_degree, Image.BILINEAR), mask.rotate(rotate_degree, Image.NEAREST)
