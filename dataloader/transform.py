@@ -1,6 +1,6 @@
 import numpy as np
 import torch
-from .functional import RandomCrop, CenterCrop,RandomFlip
+from .functional import RandomCrop, CenterCrop,RandomFlip,RandomRotate
 from PIL import Image
 import random
 from torchvision.transforms import ToTensor, ToPILImage
@@ -90,6 +90,7 @@ class MyTransform(object):
         self.crop_size = crop_size
         self.augment = augment
         self.flip = RandomFlip()
+        self.rotate = RandomRotate()
        
         self.count = 0
     def __call__(self, input, target):
@@ -101,6 +102,7 @@ class MyTransform(object):
         if self.augment :
             input, target = RandomCrop(self.crop_size)(input,target) # RandomCrop for  image and label in the same area
             input, target = self.flip(input,target)               # RandomFlip for both croped image and label
+            input, target = self.rotate(input,target)
         else:
             input, target =  CenterCrop(self.crop_size)(input, target) # CenterCrop for the validation data
             
