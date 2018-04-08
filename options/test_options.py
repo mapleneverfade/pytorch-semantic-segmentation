@@ -10,7 +10,7 @@ class TestOptions():
     def initialize(self):
         self.parser.add_argument('--cuda', action='store_true', default=True)
         self.parser.add_argument('--model', default="segnet", help='model to train,options:fcn8,segnet...')  
-        self.parser.add_argument('--model-dir', default="./models/", help='path to stored-model')   
+        self.parser.add_argument('--model-dir', default="./save_models/", help='path to stored-model')   
         self.parser.add_argument('--num-classes', type=int, default=21)
         self.parser.add_argument('--datadir', default="./data/test/",help='path where image.txt and label.txt lies')
         self.parser.add_argument('--size', default=(672,480), help='resize the test image')
