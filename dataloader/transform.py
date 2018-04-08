@@ -90,7 +90,7 @@ class MyTransform(object):
         self.crop_size = crop_size
         self.augment = augment
         self.flip = RandomFlip()
-        self.rotate = RandomRotate()
+        self.rotate = RandomRotate(32)
        
         self.count = 0
     def __call__(self, input, target):
