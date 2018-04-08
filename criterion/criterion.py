@@ -12,6 +12,6 @@ class CrossEntropyLoss2d(nn.Module):
         	#dim (int): A dimension along which log_softmax will be computed.
 		try:
 			return self.loss(F.log_softmax(outputs,dim=1), targets)
-		exception TypeError , t:
+		except TypeError , t:
 			return self.loss(F.log_softmax(outputs), targets)
 
