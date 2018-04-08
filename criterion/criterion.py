@@ -10,5 +10,8 @@ class CrossEntropyLoss2d(nn.Module):
 	def forward(self, outputs, targets):
         	#torch version >0.2 F.log_softmax(input, dim=?) 
         	#dim (int): A dimension along which log_softmax will be computed.
-		return self.loss(F.log_softmax(outputs,dim=1), targets)
+		try:
+			return self.loss(F.log_softmax(outputs,dim=1), targets)
+		exception TypeError , t:
+			return self.loss(F.log_softmax(outputs), targets)
 
