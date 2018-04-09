@@ -21,7 +21,8 @@ Recommand you use virtualenv.
 > git clone https://github.com/mapleneverfade/pytorch-semantic-segmentation.git  
 ## Install CSUPPORT (Options)
 To speed up calculating IoU:
-> cd ./utils/cityscape/
+> cd ./utils/cityscape/    
+
 > python setup.py install
 ## Train 
  If gpu is available:  
