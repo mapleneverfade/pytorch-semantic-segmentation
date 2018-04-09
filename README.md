@@ -12,13 +12,17 @@
 - pytorch 0.2.0
 - torchvision 0.2.0
 - python 3.5.2  
+- cython
 
 ## Download
 Recommand you use virtualenv.
 > virtualenv -p python3 YourVirtualEnv --no-site-packages  
 
 > git clone https://github.com/mapleneverfade/pytorch-semantic-segmentation.git  
-
+## Install CSUPPORT (Options)
+To speed up calculate IoU:
+> cd ./utils/cityscape/
+> python setup.py install
 ## Train 
  If gpu is available:  
  
