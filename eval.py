@@ -46,19 +46,17 @@ def eval(args, model, loader_val, criterion, epoch):
         return average_epoch_loss_val, iouVal
             
 def add_to_confMatrix(prediction, groundtruth, confMatrix, perImageStats, nbPixels):
-    if isinstance(prediction, list):   #merge gpu tensors
+    if isinstance(prediction, list):   #merge multi-gpu tensors
         outputs_cpu = prediction[0].cpu()
         for i in range(1,len(outputs)):
             outputs_cpu = torch.cat((outputs_cpu, prediction[i].cpu()), 0)
     else:
         outputs_cpu = prediction.cpu()
-        
-    for i in range(0, outputs_cpu.size(0)):   #args.batch_size
+    for i in range(0, outputs_cpu.size(0)):   #args.batch_size,evaluate iou of each batch
         prediction = ToPILImage()(outputs_cpu[i].max(0)[1].data.unsqueeze(0).byte())
-        groundtruth = ToPILImage()(groundtruth[i].cpu().byte())
-        nbPixels += evalIoU.evaluatePairPytorch(prediction, groundtruth, confMatrix, perImageStats, evalIoU.args)
-              
-        # Calculate val IOU scores on class level from matrix
+        groundtruth_image = ToPILImage()(groundtruth[i].cpu().byte())
+        nbPixels += evalIoU.evaluatePairPytorch(prediction, groundtruth_image, confMatrix, perImageStats, evalIoU.args)    
+
 def cal_iou(evalIoU, confMatrix):
         iou = 0
         classScoreList = {}
